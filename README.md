@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌌 ExecutionOS
 
-## Getting Started
+![ExecutionOS Banner](https://raw.githubusercontent.com/PmwMaster/ExecutionOS/main/public/banner.png)
 
-First, run the development server:
+> **Transform Your Productivity into Evolution.** 🚀
 
+ExecutionOS is a premium Micro-SaaS platform designed for high-performers who want to gamify their professional and personal development. It's not just a task manager; it's an intelligent prioritization engine that tracks your mastery across multiple skills and areas of life.
+
+---
+
+## ✨ Features
+
+- **🎯 Intelligent Prioritization**: Custom scoring algorithm that ranks your tasks based on impact, duration, and status.
+- **🧬 Hierarchical Evolution System**: 
+    - **Areas**: Macro domains (e.g., Career, Health, Studies).
+    - **Skills**: Specific disciplines (e.g., Coding, Design, Marketing).
+    - **SubSkills**: Granular mastery (e.g., React, SQL, Copywriting).
+- **📈 Atomic XP Propagation**: Real-time experience distribution through your entire skill tree, handled directly in the database for maximum reliability.
+- **⏱️ Integrated Task Timer**: Precise time tracking with manual controls to ensure every second of focus counts.
+- **🕸️ Radar Mastery Chart**: Visual feedback on your skill distribution to identify where you're excelling and where you need focus.
+- **✍️ Seamless Task Editing**: Complete control over your planning with subskill weight re-distribution.
+
+## 🛠️ Tech Stack
+
+- **Frontend**: [Next.js 15](https://nextjs.org/) + [React](https://reactjs.org/) + [Tailwind CSS](https://tailwindcss.com/)
+- **Backend/DB**: [Supabase](https://supabase.com/) (PostgreSQL + Auth + Realtime)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Charts**: [SVG-based Custom Radar Charts]
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Node.js (v18+)
+- Supabase Account
+
+### 2. Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/PmwMaster/ExecutionOS.git
+cd ExecutionOS
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Environment Setup
+Create a `.env.local` file in the root:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Database Setup
+Run the migrations found in `supabase/migrations/` in your Supabase SQL Editor:
+1. `01_initial_schema.sql`
+2. `02_evolution_system.sql`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5. Run Locally
+```bash
+npm run dev
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+ExecutionOS follows a clean, hook-based architecture for state management and direct database communication through a secure RPC (Remote Procedure Call) layer.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```mermaid
+graph TD
+    UI[Frontend Components] --> Hooks[Custom React Hooks]
+    Hooks --> Supabase[Supabase Client]
+    Supabase --> RPC[PostgreSQL RPC Functions]
+    RPC --> DB[(PostgreSQL Database)]
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 License
+This project is for personal evolution and demonstration. [MIT License](LICENSE)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Developed with focus and precision.* 🥊⚡
