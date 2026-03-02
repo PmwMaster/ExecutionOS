@@ -38,8 +38,8 @@ export function useTasks() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return { error: 'Not authenticated' };
 
-        const { data, error } = await supabase
-            .from('tasks')
+        const { data, error } = await (supabase
+            .from('tasks') as any)
             .insert([{ ...task, user_id: user.id } as any])
             .select()
             .single();
@@ -129,9 +129,9 @@ export function useTasks() {
             };
         }
 
-        const { error } = await supabase
-            .from('tasks')
-            .update(update)
+        const { error } = await (supabase
+            .from('tasks') as any)
+            .update(update as any)
             .eq('id', taskId);
 
         if (error) return { error: error.message };
@@ -140,8 +140,8 @@ export function useTasks() {
     };
 
     const updateTask = async (id: string, task: Partial<TaskInsert>, subskills?: { id: string, weight: number }[]) => {
-        const { error } = await supabase
-            .from('tasks')
+        const { error } = await (supabase
+            .from('tasks') as any)
             .update(task as any)
             .eq('id', id);
 

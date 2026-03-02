@@ -19,9 +19,9 @@ export function useEvolution() {
         try {
             setLoading(true);
             const [areasRes, skillsRes, subSkillsRes] = await Promise.all([
-                supabase.from('areas').select('*').order('name'),
-                supabase.from('skills').select('*').order('name'),
-                supabase.from('subskills').select('*').order('name')
+                (supabase.from('areas') as any).select('*').order('name'),
+                (supabase.from('skills') as any).select('*').order('name'),
+                (supabase.from('subskills') as any).select('*').order('name')
             ]);
 
             if (areasRes.data) setAreas(areasRes.data);
@@ -89,7 +89,7 @@ export function useEvolution() {
     };
 
     const deleteArea = async (id: string) => {
-        const { error } = await supabase.from('areas').delete().eq('id', id);
+        const { error } = await (supabase.from('areas') as any).delete().eq('id', id);
         if (!error) {
             setAreas(prev => prev.filter(a => a.id !== id));
             // Cascade local state update
@@ -101,7 +101,7 @@ export function useEvolution() {
     };
 
     const deleteSkill = async (id: string) => {
-        const { error } = await supabase.from('skills').delete().eq('id', id);
+        const { error } = await (supabase.from('skills') as any).delete().eq('id', id);
         if (!error) {
             setSkills(prev => prev.filter(s => s.id !== id));
             // Cascade local state update
@@ -111,7 +111,7 @@ export function useEvolution() {
     };
 
     const deleteSubSkill = async (id: string) => {
-        const { error } = await supabase.from('subskills').delete().eq('id', id);
+        const { error } = await (supabase.from('subskills') as any).delete().eq('id', id);
         if (!error) setSubSkills(prev => prev.filter(s => s.id !== id));
         return { error };
     };

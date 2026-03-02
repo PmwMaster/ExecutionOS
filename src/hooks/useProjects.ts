@@ -38,8 +38,8 @@ export function useProjects() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return { error: 'Not authenticated' };
 
-        const { data, error } = await supabase
-            .from('projects')
+        const { data, error } = await (supabase
+            .from('projects') as any)
             .insert([{ ...project, user_id: user.id }])
             .select()
             .single();
