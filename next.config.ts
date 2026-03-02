@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // @ts-ignore - Disable all development indicators (N logo, Compiling, etc)
+  devIndicators: false,
 };
 
 export default nextConfig;
