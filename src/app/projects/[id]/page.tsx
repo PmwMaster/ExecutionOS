@@ -31,7 +31,7 @@ export default function ProjectDetailPage() {
     const router = useRouter();
     const { projects, loading: loadingProjects } = useProjects();
     const { tasks, loading: loadingTasks, updateTaskStatus, addTask, updateTask, deleteTask } = useTasks();
-    const { subSkills } = useEvolution();
+    const { subSkills, taskSubSkills } = useEvolution();
     const [isAddingTask, setIsAddingTask] = useState(false);
     const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,7 +59,6 @@ export default function ProjectDetailPage() {
         const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
         const totalSeconds = projectTasks.reduce((acc, t) => {
-            // Se a tarefa estiver pronta e o cronômetro não foi usado, usa o tempo estimado (fallback)
             const timeSpent = t.elapsed_seconds > 0
                 ? t.elapsed_seconds
                 : (t.status === 'done' ? t.duration_minutes * 60 : 0);
@@ -74,6 +73,27 @@ export default function ProjectDetailPage() {
 
         return { total, completed, progress, hours, minutes, avgImpact };
     }, [projectTasks]);
+
+    // Distribuição de SubSkills do projeto: agrega XP pelas tarefas vinculadas
+    const subSkillDistribution = useMemo(() => {
+        const projectTaskIds = new Set(projectTasks.map(t => t.id));
+        const distribution: Record<string, { name: string, totalXP: number }> = {};
+
+        taskSubSkills
+            .filter(tss => projectTaskIds.has(tss.task_id))
+            .forEach(tss => {
+                const sub = subSkills.find(s => s.id === tss.subskill_id);
+                if (sub) {
+                    if (!distribution[sub.id]) {
+                        distribution[sub.id] = { name: sub.name, totalXP: 0 };
+                    }
+                    distribution[sub.id].totalXP += sub.total_xp * tss.normalized_weight + tss.distribution_weight;
+                }
+            });
+
+        return Object.values(distribution)
+            .sort((a, b) => b.totalXP - a.totalXP);
+    }, [projectTasks, taskSubSkills, subSkills]);
 
     const skillDistribution = useMemo(() => {
         const distribution: Record<string, number> = {};
@@ -224,23 +244,36 @@ export default function ProjectDetailPage() {
                         </div>
                     </div>
 
-                    {/* Skill Distribution Placeholder for Spider Chart */}
-                    <div className="flex items-center justify-center min-h-[300px]">
-                        {skillDistribution.length >= 3 ? (
-                            <RadarChart
-                                data={skillDistribution.map(([label, value]) => ({ label, value }))}
-                                size={350}
-                            />
-                        ) : (
-                            <div className="text-center space-y-4">
-                                <div className="mx-auto w-16 h-16 rounded-full bg-indigo-600/10 flex items-center justify-center text-indigo-400">
-                                    <Brain size={32} />
+                    {/* SubSkill Spider Chart */}
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="text-sm font-bold uppercase tracking-widest text-zinc-500">
+                                {subSkillDistribution.length >= 3 ? 'Mapa de SubSkills' : 'Distribuição de Habilidades'}
+                            </span>
+                            <Brain size={18} className="text-indigo-400" />
+                        </div>
+                        <div className="flex items-center justify-center min-h-[280px]">
+                            {subSkillDistribution.length >= 3 ? (
+                                <RadarChart
+                                    data={subSkillDistribution.map(s => ({ label: s.name, value: s.totalXP }))}
+                                    size={320}
+                                />
+                            ) : skillDistribution.length >= 3 ? (
+                                <RadarChart
+                                    data={skillDistribution.map(([label, value]) => ({ label, value }))}
+                                    size={320}
+                                />
+                            ) : (
+                                <div className="text-center space-y-4">
+                                    <div className="mx-auto w-16 h-16 rounded-full bg-indigo-600/10 flex items-center justify-center text-indigo-400">
+                                        <Brain size={32} />
+                                    </div>
+                                    <p className="text-zinc-500 max-w-[220px] text-sm">
+                                        Vincule pelo menos 3 SubSkills nas tarefas deste projeto para desbloquear o Gráfico Aranha.
+                                    </p>
                                 </div>
-                                <p className="text-zinc-500 max-w-[200px] text-sm">
-                                    Adicione pelo menos 3 habilidades diferentes em suas tarefas para desbloquear o Gráfico de Aranha.
-                                </p>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
 
                     <div className="mt-8 space-y-4">

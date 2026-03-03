@@ -9,14 +9,15 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { TaskTimer } from '@/components/TaskTimer';
 import { useEvolution } from '@/hooks/useEvolution';
 import { RadarChart } from '@/components/RadarChart';
+import { AreaChart } from '@/components/AreaChart';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Brain, Sparkles } from 'lucide-react';
+import { Brain, Sparkles, BarChart3 } from 'lucide-react';
 
 export default function Dashboard() {
   const { tasks, loading: loadingTasks, updateTaskStatus, toggleTimer } = useTasks();
   const { projects, loading: loadingProjects } = useProjects();
-  const { skills, loading: loadingEvolution } = useEvolution();
+  const { skills, areas, loading: loadingEvolution } = useEvolution();
   const [recommendedTask, setRecommendedTask] = useState<any>(null);
 
   const stats = useMemo(() => {
@@ -256,6 +257,32 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Area Chart - Skills por Área */}
+      {areas.length > 0 && skills.length > 0 && (
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/20 p-8 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="rounded-xl bg-amber-600/20 p-2 text-amber-400">
+              <BarChart3 size={24} />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold">Habilidades por Área</h3>
+              <p className="text-zinc-500 text-sm">Visão geral do XP acumulado em cada habilidade, agrupada por área de domínio.</p>
+            </div>
+          </div>
+          <AreaChart
+            data={skills.map(skill => {
+              const area = areas.find(a => a.id === skill.area_id);
+              return {
+                label: skill.name,
+                value: skill.current_xp + (skill.level - 1) * skill.max_xp,
+                area: area?.name || 'Sem Área',
+              };
+            })}
+            height={300}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -7,26 +7,30 @@ import { Database } from '@/lib/database.types';
 type Area = Database['public']['Tables']['areas']['Row'];
 type Skill = Database['public']['Tables']['skills']['Row'];
 type SubSkill = Database['public']['Tables']['subskills']['Row'];
+type TaskSubSkill = Database['public']['Tables']['task_subskills']['Row'];
 
 export function useEvolution() {
     const supabase = createClient();
     const [areas, setAreas] = useState<Area[]>([]);
     const [skills, setSkills] = useState<Skill[]>([]);
     const [subSkills, setSubSkills] = useState<SubSkill[]>([]);
+    const [taskSubSkills, setTaskSubSkills] = useState<TaskSubSkill[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            const [areasRes, skillsRes, subSkillsRes] = await Promise.all([
+            const [areasRes, skillsRes, subSkillsRes, taskSubSkillsRes] = await Promise.all([
                 (supabase.from('areas') as any).select('*').order('name'),
                 (supabase.from('skills') as any).select('*').order('name'),
-                (supabase.from('subskills') as any).select('*').order('name')
+                (supabase.from('subskills') as any).select('*').order('name'),
+                (supabase.from('task_subskills') as any).select('*')
             ]);
 
             if (areasRes.data) setAreas(areasRes.data);
             if (skillsRes.data) setSkills(skillsRes.data);
             if (subSkillsRes.data) setSubSkills(subSkillsRes.data);
+            if (taskSubSkillsRes.data) setTaskSubSkills(taskSubSkillsRes.data);
         } catch (error) {
             console.error('Error fetching evolution data:', error);
         } finally {
@@ -120,6 +124,7 @@ export function useEvolution() {
         areas,
         skills,
         subSkills,
+        taskSubSkills,
         loading,
         addArea,
         addSkill,
