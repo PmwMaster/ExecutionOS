@@ -345,7 +345,7 @@ export default function ProjectDetailPage() {
                             />
                             <div className="flex gap-2">
                                 <select
-                                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 text-zinc-300"
+                                    className="flex-[2] bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500 text-zinc-300"
                                     value={isCustomSkill ? 'Outro' : taskForm.skill}
                                     onChange={(e) => {
                                         const val = e.target.value;
@@ -370,11 +370,48 @@ export default function ProjectDetailPage() {
                                     <input
                                         required
                                         placeholder="Habilidade"
-                                        className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                                        className="flex-[3] bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500"
                                         value={taskForm.skill}
                                         onChange={e => setTaskForm({ ...taskForm, skill: e.target.value })}
                                     />
                                 )}
+                            </div>
+
+                            {/* New Duration Selector */}
+                            <div className="space-y-3">
+                                <label className="text-xs font-medium text-zinc-500 flex items-center gap-1.5 pl-0.5">
+                                    <Clock size={12} className="text-indigo-400" />
+                                    Duração da Tarefa
+                                </label>
+                                <div className="flex flex-wrap gap-2">
+                                    {[15, 30, 60, 120].map((t) => (
+                                        <button
+                                            key={t}
+                                            type="button"
+                                            onClick={() => setTaskForm({ ...taskForm, duration_minutes: t })}
+                                            className={cn(
+                                                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                                taskForm.duration_minutes === t
+                                                    ? "bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20"
+                                                    : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
+                                            )}
+                                        >
+                                            {t >= 60 ? `${t / 60}h` : `${t}m`}
+                                        </button>
+                                    ))}
+                                    <div className="relative flex-1 min-w-[80px]">
+                                        <input
+                                            type="number"
+                                            placeholder="Minutos"
+                                            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-3 pr-8 py-1.5 text-xs outline-none focus:border-indigo-500 h-full"
+                                            value={taskForm.duration_minutes}
+                                            onChange={(e) => setTaskForm({ ...taskForm, duration_minutes: Number(e.target.value) })}
+                                        />
+                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-zinc-600 pointer-events-none">
+                                            min
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* SubSkill Selection */}

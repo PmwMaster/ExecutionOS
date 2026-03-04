@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase';
 import { useState } from 'react';
 import { Plus, Trash2, CheckCircle2, Clock, Play, Zap, Pencil, Minus } from 'lucide-react';
 import { DeleteModal } from '@/components/DeleteModal';
+import { cn } from '@/lib/utils';
 
 export default function TasksPage() {
     const { tasks, loading: loadingTasks, addTask, updateTask, updateTaskStatus, deleteTask } = useTasks();
@@ -174,14 +175,39 @@ export default function TasksPage() {
                                 </select>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-zinc-300">Duração (minutos)</label>
-                                <input
-                                    type="number"
-                                    required
-                                    className="mt-1 block w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-white outline-none focus:border-indigo-500"
-                                    value={form.duration_minutes}
-                                    onChange={(e) => setForm({ ...form, duration_minutes: Number(e.target.value) })}
-                                />
+                                <label className="text-sm font-medium text-zinc-300 flex items-center gap-2">
+                                    <Clock size={14} className="text-indigo-400" />
+                                    Duração estimada
+                                </label>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                    {[15, 30, 60, 120].map((t) => (
+                                        <button
+                                            key={t}
+                                            type="button"
+                                            onClick={() => setForm({ ...form, duration_minutes: t })}
+                                            className={cn(
+                                                "px-4 py-2 rounded-xl text-sm font-bold transition-all border",
+                                                form.duration_minutes === t
+                                                    ? "bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105"
+                                                    : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300"
+                                            )}
+                                        >
+                                            {t >= 60 ? `${t / 60}h` : `${t}m`}
+                                        </button>
+                                    ))}
+                                    <div className="relative flex-1 min-w-[100px]">
+                                        <input
+                                            type="number"
+                                            placeholder="Personalizado"
+                                            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white outline-none focus:border-indigo-500"
+                                            value={form.duration_minutes}
+                                            onChange={(e) => setForm({ ...form, duration_minutes: Number(e.target.value) })}
+                                        />
+                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-500 pointer-events-none">
+                                            min
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="space-y-4">
